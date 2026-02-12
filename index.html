@@ -11,11 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Fraunces:opsz,wght@9..144,700;9..144,800&display=swap" rel="stylesheet">
 
   <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-    }
+    *{ margin:0; padding:0; box-sizing:border-box; }
 
     :root{
       --pink-1:#fff0f7;
@@ -30,7 +26,6 @@
     body{
       font-family: Fredoka, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 
-      /* Background image + pink overlay */
       background:
         radial-gradient(900px 500px at 20% 10%, rgba(255,182,213,.55), transparent 60%),
         radial-gradient(900px 500px at 80% 20%, rgba(255,126,183,.35), transparent 55%),
@@ -43,9 +38,48 @@
       align-items:center;
       padding: clamp(14px, 2vw, 28px);
       overflow-x:hidden;
+      position:relative;
     }
 
-    /* ✨ Container (glassy + cute) */
+    /* ✅ Floating name watermark (edit the text in HTML) */
+    .name-float{
+      position:fixed;
+      inset:0;
+      display:grid;
+      place-items:center;
+      pointer-events:none;
+      z-index:0;
+    }
+    .name-float span{
+      font-family: Fraunces, Georgia, serif;
+      font-size: clamp(2.6rem, 6vw, 6rem);
+      letter-spacing: .06em;
+      color: rgba(255, 59, 136, .10);
+      text-shadow:
+        0 20px 60px rgba(255,59,136,.18),
+        0 2px 0 rgba(255,255,255,.18);
+      transform: rotate(-8deg);
+      filter: blur(.1px);
+    }
+
+    /* ✅ Dim / blur overlay when envelope opens */
+    .focus-dim{
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.35);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      opacity:0;
+      pointer-events:none;
+      transition: opacity .35s ease;
+      z-index:2;
+    }
+    .focus-dim.show{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    /* ✨ Container */
     .container{
       width:min(95vw,900px);
       padding:clamp(22px,3.2vw,46px);
@@ -63,7 +97,7 @@
 
       animation:fadeIn .8s cubic-bezier(.2,.9,.2,1);
       position:relative;
-      z-index: 1; /* keep above falling emojis */
+      z-index:3;
     }
 
     @keyframes fadeIn{
@@ -93,7 +127,7 @@
       to{ transform: translateY(-140%) translateX(40px) rotate(360deg); opacity:0;}
     }
 
-    /* Title + subtitle */
+    /* Title */
     h1{
       font-family: Fraunces, Georgia, serif;
       color:var(--pink-5);
@@ -145,7 +179,6 @@
       pointer-events:none;
       opacity:.9;
     }
-
     .photo-frame:hover{
       transform: translateY(-6px) scale(1.05) rotate(1deg);
       box-shadow: 0 22px 55px rgba(255,20,147,.35);
@@ -175,8 +208,8 @@
       perspective:900px;
       transform-style: preserve-3d;
       transition: transform .25s cubic-bezier(.2,.9,.2,1);
+      z-index:4;
     }
-
     .central-envelope:hover{
       transform: translateY(-4px) scale(1.06);
     }
@@ -191,13 +224,13 @@
       position:relative;
       overflow:hidden;
     }
-
     .envelope-back::before{
       content:"";
       position:absolute;
       inset:-40%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 40%),
-                  radial-gradient(circle at 70% 60%, rgba(255,255,255,.35), transparent 45%);
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 40%),
+        radial-gradient(circle at 70% 60%, rgba(255,255,255,.35), transparent 45%);
       transform: rotate(10deg);
       opacity:.75;
     }
@@ -209,7 +242,6 @@
       width:100%;
       height:52%;
       background:linear-gradient(180deg,#ffd0e6,#ffb9d9);
-
       clip-path:polygon(0 0,100% 0,50% 100%);
       transform-origin:top center;
       transition: transform .7s cubic-bezier(.2,.9,.2,1);
@@ -217,7 +249,6 @@
       border-top-right-radius:14px;
       filter: drop-shadow(0 10px 15px rgba(255,59,136,.12));
     }
-
     .central-envelope.open .envelope-flap{
       transform:rotateX(180deg);
     }
@@ -232,34 +263,31 @@
       transition: opacity .25s ease, transform .25s ease;
       text-shadow: 0 10px 25px rgba(255,59,136,.25);
     }
-
     .central-envelope.open .envelope-heart{
       opacity:0;
       transform: translateX(-50%) translateY(6px) scale(.95);
     }
 
     .envelope-note{
-  position:absolute;
-  top:55%;
-  left:50%;
-  transform:translate(-50%,-50%) scale(.85);
+      position:absolute;
+      top:55%;
+      left:50%;
+      transform:translate(-50%,-50%) scale(.85);
 
-  width:min(320px, 85vw);     /* wider */
-  max-height:220px;           /* taller */
-  overflow-y:auto;            /* scroll if long */
+      width:min(320px, 85vw);
+      max-height:220px;
+      overflow-y:auto;
 
-  background:rgba(255,255,255,.94);
-  padding:20px 18px;
-  border-radius:16px;
-  border:2px dashed rgba(255,59,136,.55);
+      background:rgba(255,255,255,.94);
+      padding:20px 18px;
+      border-radius:16px;
+      border:2px dashed rgba(255,59,136,.55);
 
-  box-shadow:0 12px 32px rgba(255,105,180,.25);
-  opacity:0;
-  transition: opacity .45s ease, transform .55s cubic-bezier(.2,.9,.2,1);
-  text-align:center;
-}
-
-
+      box-shadow:0 12px 32px rgba(255,105,180,.25);
+      opacity:0;
+      transition: opacity .45s ease, transform .55s cubic-bezier(.2,.9,.2,1);
+      text-align:center;
+    }
     .envelope-note h3{
       font-family: Fraunces, Georgia, serif;
       color: var(--pink-5);
@@ -268,30 +296,33 @@
     }
     .envelope-note p{
       color:var(--ink);
-      line-height:1.55;
-      font-size: .98rem;
+      line-height:1.7;
+      font-size:1rem;
+      white-space: pre-line; /* ✅ for typewriter line breaks */
     }
-
     .central-envelope.open .envelope-note{
       opacity:1;
       transform:translate(-50%,-60%) scale(1);
     }
-    .envelope-note::-webkit-scrollbar{
-  width:6px;
-}
-.envelope-note::-webkit-scrollbar-thumb{
-  background:rgba(255,59,136,.4);
-  border-radius:999px;
-}
-.envelope-note::-webkit-scrollbar-track{
-  background:transparent;
-}
-    .envelope-note p{
-  color:var(--ink);
-  line-height:1.7;
-  font-size:1rem;
-}
+    .envelope-note::-webkit-scrollbar{ width:6px; }
+    .envelope-note::-webkit-scrollbar-thumb{
+      background:rgba(255,59,136,.4);
+      border-radius:999px;
+    }
+    .envelope-note::-webkit-scrollbar-track{ background:transparent; }
 
+    /* ✅ Hide envelope until YES */
+    .central-envelope.hidden{ display:none; }
+    .central-envelope.reveal{
+      display:block;
+      animation: envFlyIn .85s cubic-bezier(.2,.9,.2,1);
+    }
+    /* ✅ Envelope flies in (recommendation #3) */
+    @keyframes envFlyIn{
+      0%{ opacity:0; transform: translateY(40px) scale(.92) rotate(-4deg); }
+      60%{ opacity:1; transform: translateY(-6px) scale(1.02) rotate(2deg); }
+      100%{ opacity:1; transform: translateY(0) scale(1) rotate(0deg); }
+    }
 
     /* Buttons */
     .buttons{
@@ -300,6 +331,7 @@
       gap:18px;
       margin-top:18px;
       flex-wrap:wrap;
+      align-items:center;
     }
 
     .btn{
@@ -310,12 +342,11 @@
       cursor:pointer;
       font-weight:700;
       letter-spacing:.2px;
-
       box-shadow: 0 12px 24px rgba(0,0,0,.12);
-      transition: transform .2s ease, box-shadow .2s ease, background .2s ease, filter .2s ease;
+      transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
       user-select:none;
+      transform-origin:center;
     }
-
     .btn:active{
       transform: translateY(1px) scale(.99);
       box-shadow: 0 8px 18px rgba(0,0,0,.12);
@@ -327,7 +358,6 @@
       position:relative;
       overflow:hidden;
     }
-
     .btn-no{
       background: linear-gradient(135deg, #c7b6bf, #a99aa3);
       color:white;
@@ -342,7 +372,7 @@
       text-shadow: 0 10px 25px rgba(255,59,136,.18);
     }
 
-    /* Modal */
+    /* Modal (photos) */
     .modal{
       display:none;
       position:fixed;
@@ -352,7 +382,6 @@
       -webkit-backdrop-filter: blur(6px);
       z-index: 999;
     }
-
     .modal-content{
       position:absolute;
       top:50%;
@@ -363,7 +392,6 @@
       border-radius:14px;
       box-shadow: 0 30px 90px rgba(0,0,0,.55);
     }
-
     .close{
       position:absolute;
       top:18px;
@@ -374,6 +402,169 @@
       text-shadow: 0 12px 30px rgba(0,0,0,.35);
       user-select:none;
     }
+
+    /* ✅ Surprise modal (#5) */
+    .surprise{
+      display:none;
+      position:fixed;
+      inset:0;
+      background: rgba(0,0,0,.78);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index:1000;
+    }
+    .surprise.show{ display:block; }
+    .surprise-card{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+
+  /* BIGGER BOX */
+  width:min(680px, 94vw);     /* was 520px */
+  padding:28px 26px 30px;     /* was smaller */
+  border-radius:26px;         /* a bit rounder */
+
+  background: rgba(255,240,247,.94);
+  border:1px solid rgba(255,255,255,.75);
+  box-shadow: 0 30px 90px rgba(0,0,0,.55);
+  text-align:center;
+}
+    .surprise-title{
+  font-family: Fraunces, Georgia, serif;
+  color: var(--pink-5);
+  font-size:2.05rem;          /* was 1.8rem */
+  margin:8px 0 10px;
+}
+    .surprise-sub{
+  color: var(--ink);
+  opacity:.9;
+  margin-bottom:14px;
+  line-height:1.45;
+  position: relative;
+  z-index: 2;
+}
+    .surprise-close{
+      position:absolute;
+      top:12px;
+      right:16px;
+      font-size:34px;
+      cursor:pointer;
+      color: rgba(255,59,136,.9);
+      user-select:none;
+    }
+
+    /* ✅ Cake image slot (if you add cake.png it will show) */
+    .cake-img{
+  width:min(360px, 78vw);
+  height:auto;
+  border-radius:18px;
+
+  /* ✅ add more space so it never overlaps the subtitle */
+  margin:22px auto 10px;
+
+  display:none;
+  box-shadow: 0 18px 45px rgba(255,59,136,.18);
+  position: relative;
+  z-index: 1;
+}
+
+    /* ✅ CSS cake fallback (shows if no image) */
+    .cake{
+  width:min(340px, 78vw);
+
+  /* ✅ add more space above the cake */
+  margin:28px auto 10px;
+
+  position:relative;
+  z-index: 1;
+  filter: drop-shadow(0 18px 35px rgba(255,59,136,.18));
+}
+    .cake .plate{
+      height:18px;
+      background: rgba(255,255,255,.8);
+      border-radius:999px;
+      border:1px solid rgba(255,59,136,.15);
+    }
+    .cake .layer{
+      height:64px;
+      border-radius:18px;
+      margin:0 auto;
+      position:relative;
+      overflow:hidden;
+      border:1px solid rgba(255,59,136,.18);
+    }
+    .cake .layer.one{ width:92%; background: linear-gradient(180deg,#ffd6ea,#ffb6d5); }
+    .cake .layer.two{ width:84%; margin-top:-10px; background: linear-gradient(180deg,#ffeaf4,#ffd0e6); }
+    .cake .drip{
+      position:absolute; top:0; left:0; right:0; height:22px;
+      background: rgba(255,255,255,.55);
+      border-bottom-left-radius:18px;
+      border-bottom-right-radius:18px;
+    }
+    .cake .drip::before, .cake .drip::after{
+      content:"";
+      position:absolute;
+      width:22px; height:22px;
+      background: rgba(255,255,255,.55);
+      border-radius:999px;
+      bottom:-10px;
+    }
+    .cake .drip::before{ left:22%; }
+    .cake .drip::after{ right:28%; }
+    .cake .sprinkles{
+      position:absolute; inset:0;
+      background:
+        radial-gradient(circle at 20% 55%, rgba(255,59,136,.55) 2px, transparent 3px),
+        radial-gradient(circle at 45% 40%, rgba(255,127,183,.55) 2px, transparent 3px),
+        radial-gradient(circle at 70% 55%, rgba(255,59,136,.45) 2px, transparent 3px),
+        radial-gradient(circle at 35% 70%, rgba(255,182,213,.6) 2px, transparent 3px),
+        radial-gradient(circle at 58% 74%, rgba(255,127,183,.55) 2px, transparent 3px);
+      opacity:.85;
+    }
+    .cake .candles{
+  position:absolute;
+  top:-22px;   /* was -34px */
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:14px;
+}
+    .cake .candle{
+      width:10px; height:32px;
+      background: linear-gradient(180deg,#fff,#ffd6ea);
+      border-radius:10px;
+      border:1px solid rgba(255,59,136,.18);
+      position:relative;
+    }
+    .cake .flame{
+      position:absolute;
+      top:-14px; left:50%;
+      transform:translateX(-50%);
+      width:12px; height:16px;
+      background: radial-gradient(circle at 30% 30%, #fff, #ffd6ea 55%, rgba(255,59,136,.25));
+      border-radius:999px;
+      animation: flicker .12s infinite alternate;
+      filter: drop-shadow(0 10px 10px rgba(255,59,136,.18));
+    }
+    @keyframes flicker{
+      from{ transform:translateX(-50%) scale(.96) rotate(-4deg); opacity:.9; }
+      to{ transform:translateX(-50%) scale(1.05) rotate(4deg); opacity:1; }
+    }
+
+    .mini-btn{
+      padding:10px 16px;
+      border:none;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:700;
+      background: linear-gradient(135deg, var(--pink-5), #ff5aa3);
+      color:white;
+      box-shadow: 0 12px 24px rgba(0,0,0,.12);
+      transition: transform .2s ease;
+      margin-top:10px;
+    }
+    .mini-btn:hover{ transform: translateY(-1px) scale(1.03); }
 
     /* Mobile layout */
     @media(max-width:700px){
@@ -392,7 +583,7 @@
       inset: 0;
       pointer-events: none;
       overflow: hidden;
-      z-index: 0;
+      z-index: 1;
     }
     .fall i{
       position:absolute;
@@ -405,10 +596,35 @@
     @keyframes fallDown{
       to{ transform: translateY(110vh) rotate(360deg); opacity: 0.15; }
     }
+
+    /* ✅ Confetti burst layer (recommendation #1) */
+    .burst{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      overflow:hidden;
+      z-index:1100;
+    }
+    .burst span{
+      position:absolute;
+      font-size:18px;
+      animation: pop 900ms ease-out forwards;
+      filter: drop-shadow(0 10px 16px rgba(255,59,136,.18));
+    }
+    @keyframes pop{
+      from{ transform: translate(var(--x0), var(--y0)) scale(.8) rotate(0deg); opacity:1; }
+      to{ transform: translate(var(--x1), var(--y1)) scale(1.2) rotate(360deg); opacity:0; }
+    }
   </style>
 </head>
 
 <body>
+  <!-- edit this name -->
+  <div class="name-float" aria-hidden="true"><span>Angel</span></div>
+
+  <div class="focus-dim" id="focusDim" onclick="closeEnvelopeFocus()"></div>
+
+  <div class="burst" id="burst" aria-hidden="true"></div>
   <div class="fall" aria-hidden="true"></div>
 
   <div class="container">
@@ -436,28 +652,27 @@
         <img src="photo3.jpg" alt="Photo 3">
       </div>
 
-      <div class="central-envelope" onclick="toggleEnvelope(this)">
+      <!-- ✅ Envelope starts hidden -->
+      <div class="central-envelope hidden" id="envelope" onclick="toggleEnvelope(this)">
         <div class="envelope-heart">💌</div>
         <div class="envelope-back"></div>
         <div class="envelope-flap"></div>
 
         <div class="envelope-note">
           <h3>Dear baby:</h3>
-          <p>
-            Thank you for always being here by my side.<br>
 
-            I wouldnt ask anyone else but you. You make me the happiest man alive.<br>
-             Even when days are hard, when I come home from school and i always have no enegry left, you always give me comfort and love.<br>
-            For this year, I’ll ask again… will you be my Valentine?
+          <!-- ✅ Typewriter target -->
+          <p id="letterText"></p>
 
-          </p>
+          <!-- ✅ Surprise button (#5) -->
+          <button class="mini-btn" type="button" onclick="openSurprise()">suprise for u</button>
         </div>
       </div>
 
     </div>
 
     <div class="buttons">
-      <button class="btn btn-yes" onclick="sayYes()">Yes! 💖</button>
+      <button class="btn btn-yes" id="yesBtn" onclick="sayYes()">Yes! 💖</button>
       <button class="btn btn-no" id="noBtn" onclick="moveButton()">No</button>
     </div>
 
@@ -465,96 +680,307 @@
 
   </div>
 
-  <!-- Modal -->
+  <!-- Photo Modal -->
   <div id="imageModal" class="modal" role="dialog" aria-modal="true" aria-label="Photo preview">
     <span class="close" onclick="closeModal()">&times;</span>
     <img id="modalImage" class="modal-content" alt="Expanded photo">
   </div>
 
+  <!-- Surprise Modal (#5) -->
+  <div id="surpriseModal" class="surprise" role="dialog" aria-modal="true" aria-label="Surprise">
+    <div class="surprise-card">
+      <span class="surprise-close" onclick="closeSurprise()">&times;</span>
+      <div class="surprise-title">Surprise, my love 🎀</div>
+     
+
+      <!-- If you add cake.png, it will show automatically -->
+      <img id="cakeImg" class="cake-img" alt="Cake">
+
+      <!-- CSS cake fallback -->
+      <div class="cake" id="cssCake" aria-hidden="true">
+        <div class="candles">
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+        </div>
+        <div class="layer two">
+          <div class="drip"></div>
+          <div class="sprinkles"></div>
+        </div>
+        <div class="layer one">
+          <div class="drip"></div>
+          <div class="sprinkles"></div>
+        </div>
+        <div class="plate"></div>
+      </div>
+
+      
+    </div>
+  </div>
+
   <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
 
   <script>
+    // ======================
+    // MUSIC
+    // ======================
     const bgMusic = document.getElementById("bgMusic");
     let musicStarted = false;
-
     function startMusic(){
       if(musicStarted) return;
       musicStarted = true;
-
-      bgMusic.volume = 0.50; // soft & romantic
+      bgMusic.volume = 0.50;
       bgMusic.play().catch(()=>{});
+    }
+
+    // ======================
+    // ENVELOPE: reveal + open + focus dim + typewriter
+    // ======================
+    const envelopeEl = document.getElementById("envelope");
+    const focusDim = document.getElementById("focusDim");
+    let envelopeRevealed = false;
+
+    // ✅ Put your letter here (edit freely)
+    const letterFullText =
+`Thank you for always being here by my side.
+
+I wouldn’t ask anyone else but you. You make me the happiest man alive.
+
+Even when days are hard, when I come home from school and I always have no energy left, you always give me comfort and love.
+
+I’ll ask again this year and so on… will you be my Valentine?`;
+
+    const letterEl = document.getElementById("letterText");
+    let typingStarted = false;
+
+    function typeLetter(){
+      if(typingStarted) return;
+      typingStarted = true;
+
+      letterEl.textContent = "";
+      let i = 0;
+
+      const speed = 18; // lower = faster
+      const timer = setInterval(() => {
+        letterEl.textContent += letterFullText[i] || "";
+        i++;
+        if(i > letterFullText.length){
+          clearInterval(timer);
+        }
+      }, speed);
     }
 
     function toggleEnvelope(e){
       e.classList.toggle("open");
+
       if(e.classList.contains("open")){
         startMusic();
+        focusDim.classList.add("show");   // ✅ dim background
+        typeLetter();                      // ✅ typewriter
+      } else {
+        focusDim.classList.remove("show");
       }
     }
 
+    function closeEnvelopeFocus(){
+      // tap outside closes focus (doesn't hide envelope)
+      focusDim.classList.remove("show");
+      envelopeEl.classList.remove("open");
+    }
+
+    // ======================
+    // PHOTOS MODAL
+    // ======================
     function openModal(src){
       const modal = document.getElementById("imageModal");
       const img = document.getElementById("modalImage");
       img.src = src;
       modal.style.display = "block";
     }
-
     function closeModal(){
       document.getElementById("imageModal").style.display = "none";
     }
 
+    // ======================
+    // YES / NO mechanics
+    // ======================
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const yesMsg = document.getElementById("yesMsg");
+
+    let noClicks = 0;
+    let yesScale = 1;
+
     function sayYes(){
-      const msg = document.getElementById("yesMsg");
-      msg.style.display = "block";
-      msg.animate(
-        [
-          { transform:"translateY(8px)", opacity:0 },
-          { transform:"translateY(0)", opacity:1 }
-        ],
+      // confetti burst ✅ (recommendation #1)
+      burstConfetti();
+
+      // show message
+      yesMsg.style.display = "block";
+      yesMsg.animate(
+        [{ transform:"translateY(8px)", opacity:0 },{ transform:"translateY(0)", opacity:1 }],
         { duration: 450, easing:"cubic-bezier(.2,.9,.2,1)" }
+      );
+
+      // reveal envelope (fly-in) ✅ (recommendation #3)
+      if(!envelopeRevealed){
+        envelopeRevealed = true;
+        envelopeEl.classList.remove("hidden");
+        envelopeEl.classList.add("reveal");
+        envelopeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+
+      // ✅ Forever mode (#10): remove no button + change yes text
+      noBtn.style.opacity = "0";
+      noBtn.style.pointerEvents = "none";
+      setTimeout(() => { noBtn.style.display = "none"; }, 220);
+
+      yesBtn.textContent = "Always 💍";
+      yesBtn.onclick = () => {
+        // cute extra: open envelope automatically on "Always"
+        if(envelopeEl.classList.contains("hidden")) return;
+        if(!envelopeEl.classList.contains("open")) toggleEnvelope(envelopeEl);
+      };
+    }
+
+    // ✅ #2 Yes grows when she clicks No (before YES)
+    function moveButton(){
+      noClicks++;
+
+      // make NO dodge like before
+      noBtn.style.position = "fixed";
+      const padding = 12;
+      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
+      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
+      const x = Math.max(padding, Math.random() * maxX);
+      const y = Math.max(padding, Math.random() * maxY);
+      noBtn.style.left = x + "px";
+      noBtn.style.top  = y + "px";
+
+      // grow YES each time
+      yesScale = Math.min(1.65, yesScale + 0.08);
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      // optional: tiny wiggle
+      yesBtn.animate(
+        [{ transform:`scale(${yesScale}) rotate(-1deg)` }, { transform:`scale(${yesScale}) rotate(1deg)` }, { transform:`scale(${yesScale}) rotate(0deg)` }],
+        { duration: 220 }
       );
     }
 
-    function moveButton(){
-      const btn = document.getElementById("noBtn");
-      btn.style.position = "fixed";
+    // ======================
+    // Surprise modal (#5)
+    // ======================
+    const surpriseModal = document.getElementById("surpriseModal");
+    const cakeImg = document.getElementById("cakeImg");
+    const cssCake = document.getElementById("cssCake");
 
-      const padding = 12;
-      const maxX = window.innerWidth - btn.offsetWidth - padding;
-      const maxY = window.innerHeight - btn.offsetHeight - padding;
+    // ✅ Try multiple cake filenames (cake.png / cake.jpg / cake.jpeg / cake.webp)
+const cakeCandidates = ["cake.png", "cake.jpg", "cake.jpeg", "cake.webp"];
 
-      const x = Math.max(padding, Math.random() * maxX);
-      const y = Math.max(padding, Math.random() * maxY);
+function loadCake(){
+  let idx = 0;
 
-      btn.style.left = x + "px";
-      btn.style.top  = y + "px";
+  function tryNext(){
+    if(idx >= cakeCandidates.length){
+      // none found -> show CSS cake
+      cakeImg.style.display = "none";
+      cssCake.style.display = "block";
+      return;
     }
 
-    window.onclick = function(e){
-      const modal = document.getElementById("imageModal");
-      if(e.target === modal) closeModal();
+    const test = new Image();
+    const candidate = cakeCandidates[idx++];
+
+    test.onload = () => {
+      cakeImg.src = candidate;
+      cakeImg.style.display = "block";
+      cssCake.style.display = "none";
+    };
+
+    test.onerror = tryNext;
+    test.src = candidate;
+  }
+
+  tryNext();
+}
+
+// run once on page load
+loadCake();
+
+    function openSurprise(){
+      surpriseModal.classList.add("show");
+      burstConfetti(40); // extra confetti for surprise
+    }
+    function closeSurprise(){
+      surpriseModal.classList.remove("show");
     }
 
-    window.addEventListener("keydown", (e) => {
-      if(e.key === "Escape") closeModal();
-    });
+    // ======================
+    // Confetti burst
+    // ======================
+    const burstLayer = document.getElementById("burst");
+    const burstEmojis = ["💗","💖","🩷","🎀","✨","🌸"];
 
+    function burstConfetti(count = 26){
+      const cx = window.innerWidth * 0.5;
+      const cy = window.innerHeight * 0.45;
+
+      for(let i=0;i<count;i++){
+        const s = document.createElement("span");
+        s.textContent = burstEmojis[Math.floor(Math.random()*burstEmojis.length)];
+
+        const x0 = 0, y0 = 0;
+        const x1 = (Math.random()*2 - 1) * (160 + Math.random()*140);
+        const y1 = (Math.random()*-1) * (180 + Math.random()*160);
+
+        s.style.left = cx + "px";
+        s.style.top  = cy + "px";
+        s.style.setProperty("--x0", x0+"px");
+        s.style.setProperty("--y0", y0+"px");
+        s.style.setProperty("--x1", x1+"px");
+        s.style.setProperty("--y1", y1+"px");
+
+        s.style.fontSize = (14 + Math.random()*18) + "px";
+        burstLayer.appendChild(s);
+        setTimeout(()=>s.remove(), 1000);
+      }
+    }
+
+    // ======================
+    // Falling emojis (your original vibe)
+    // ======================
     const fallContainer = document.querySelector(".fall");
     const fallEmojis = ["💗","💖","🎀","✨","🌸","🩷"];
 
     function dropOne(){
       const el = document.createElement("i");
       el.textContent = fallEmojis[Math.floor(Math.random()*fallEmojis.length)];
-
       const size = 12 + Math.random()*18;
       el.style.fontSize = size + "px";
       el.style.left = Math.random()*100 + "vw";
       el.style.animationDuration = (4 + Math.random()*4) + "s";
-
       fallContainer.appendChild(el);
       setTimeout(() => el.remove(), 9000);
     }
     setInterval(dropOne, 350);
+
+    // ======================
+    // Click outside photo modal to close
+    // ======================
+    window.onclick = function(e){
+      const modal = document.getElementById("imageModal");
+      if(e.target === modal) closeModal();
+      if(e.target === surpriseModal) closeSurprise();
+    };
+
+    window.addEventListener("keydown", (e) => {
+      if(e.key === "Escape"){
+        closeModal();
+        closeSurprise();
+        closeEnvelopeFocus();
+      }
+    });
   </script>
 </body>
 </html>
